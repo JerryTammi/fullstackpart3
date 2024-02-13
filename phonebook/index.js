@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 app.use(express.json())
 
+app.use(express.static('dist'))
+
 var time = require('express-timestamp')
 app.use(time.init)
 
