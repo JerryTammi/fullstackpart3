@@ -18,6 +18,8 @@ morgan = morgan(function (tokens, req, res) {
 })
 app.use(morgan)
 
+const cors = require('cors')
+app.use(cors())
 
 let persons = [
     {
@@ -85,13 +87,26 @@ app.post('/api/persons', (request, response) => {
 
 
     const person = {
-        name: body.name,
-        number: body.number,
-        id: generateId(1000000)
+      id: generateId(1000000),
+      name: body.name,
+      number: body.number
     }
 
     persons = persons.concat(person)
     response.json(person)
+})
+
+app.put('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+    const personExists = persons.find(person => person.id === id)
+    if (!personExists) {
+      return response.status(400).json({
+          error: 'This name does not exist in the phonebook!'
+      })
+    }
+    const updatedPerson = request.body
+    persons = persons.map(person => person.id !== updatedPerson.id ? person : updatedPerson)
+    
 })
 
 app.get('/info', (request, response) => {
